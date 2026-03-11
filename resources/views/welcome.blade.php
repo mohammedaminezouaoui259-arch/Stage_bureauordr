@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -174,7 +174,7 @@ font-size:32px;
 
 <div class="header-left">
 
-<img src="{{ asset('images/wilaya (1).png') }}" class="logo">
+<img src="{{ asset('images/wilaya.png') }}" class="logo">
 
 <div class="title">
 Bureau d'Ordre<br>
@@ -201,7 +201,13 @@ Suivi, archivage sécurisé et accès rapide à tous vos documents administratif
 </p>
 
 <a href="/courriers/create" class="btn btn-add">
-Ajouter un Courrier
+Courrier Arrivée
+</a>
+
+&nbsp;
+
+<a href="/courrier-departs/create" class="btn btn-add">
+Courrier Départ
 </a>
 
 &nbsp;
@@ -218,28 +224,42 @@ Voir la Liste des Courriers
 
 <div class="card">
 
-<h3>Gestion des Courriers</h3>
+<h3>Courrier Arrivée</h3>
 
 <p>
-Suivi complet des courriers entrants et sortants avec une gestion simplifiée.
+Enregistrer et suivre tous les courriers entrants dans le bureau d'ordre.
 </p>
 
-<a href="/courriers" class="btn btn-list">
-Accéder à la Liste
+<a href="/courriers/create" class="btn btn-add">
+Ajouter Courrier Arrivée
 </a>
 
 </div>
 
 <div class="card">
 
-<h3>Archivage Sécurisé</h3>
+<h3>Courrier Départ</h3>
 
 <p>
-Tous les documents sont archivés numériquement pour un accès rapide et sécurisé.
+Créer et envoyer des courriers administratifs vers des destinataires externes.
 </p>
 
-<a href="/courriers/create" class="btn btn-add">
-Ajouter un Courrier
+<a href="/courrier-departs/create" class="btn btn-add">
+Ajouter Courrier Départ
+</a>
+
+</div>
+
+<div class="card">
+
+<h3>Liste des Courriers</h3>
+
+<p>
+Consulter tous les courriers entrants et sortants avec leurs détails.
+</p>
+
+<a href="/courriers" class="btn btn-list">
+Voir la Liste
 </a>
 
 </div>
@@ -254,4 +274,3 @@ Ajouter un Courrier
 
 </body>
 </html>
-```

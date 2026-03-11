@@ -15,7 +15,9 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-
+Route::get('/courrier-departs/create', function () {
+    return inertia('CreateCourrierDepart');
+});
 /*
 |--------------------------------------------------------------------------
 | Courriers (Pages React via Inertia)

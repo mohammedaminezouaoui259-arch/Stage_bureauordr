@@ -7,52 +7,69 @@ use Illuminate\Database\Eloquent\Model;
 
 class Courrier extends Model
 {
-    use HasFactory;
 
-    protected $fillable = [
-        'numero',
-        'type',
-        'objet',
-        'description',
-        'date_courrier',
-        'expediteur',
-        'destinataire',
-        'fichier',
-        'status_id',
-        'user_id',
-    ];
+use HasFactory;
 
-    /* =====================
-       RELATIONS
-    ====================== */
+protected $fillable = [
 
-    // 🔹 Courrier appartient à un utilisateur
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+'numero',
+'annee',
+'type',
+'objet',
+'description',
+'date_courrier',
+'date_arrivee',
+'expediteur',
+'destinataire',
+'nombre_pieces',
+'observations',
+'fichier',
+'nature_id',
+'status_id',
+'user_id'
 
-    // 🔹 Courrier appartient à un status (draft, en_cours...)
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
+];
 
-    // 🔹 Courrier a une seule affectation (service)
-    public function affectation()
-    {
-        return $this->hasOne(Affectation::class);
-    }
 
-    // 🔹 Courrier peut avoir plusieurs traitements
-    public function traitements()
-    {
-        return $this->hasMany(Traitement::class);
-    }
+// relation user
+public function user()
+{
+return $this->belongsTo(User::class);
+}
 
-    // 🔹 Courrier peut avoir une archive (une seule)
-    public function archive()
-    {
-        return $this->hasOne(Archive::class);
-    }
+
+// relation status
+public function status()
+{
+return $this->belongsTo(Status::class);
+}
+
+
+// relation nature
+public function nature()
+{
+return $this->belongsTo(Nature::class);
+}
+
+
+// affectations
+public function affectations()
+{
+return $this->hasMany(Affectation::class);
+}
+
+
+// traitements
+public function traitements()
+{
+return $this->hasMany(Traitement::class);
+}
+
+
+// archive
+public function archive()
+{
+return $this->hasOne(Archive::class);
+}
+
 }

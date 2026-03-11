@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StatusSeeder::class,
             ServiceSeeder::class,
+            NatureSeeder::class,
         ]);
 
         // User de test (اختياري)
