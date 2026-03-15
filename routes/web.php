@@ -1,9 +1,7 @@
-
 <?php
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CourrierController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,28 +10,47 @@ use Inertia\Inertia;
 | Page d'accueil
 |--------------------------------------------------------------------------
 */
-
+Route::get('/courrier-departs', function () {
+    return Inertia::render('CourrierDeparts/ListCourrierDeparts');
+});
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Liste
+Route::get('/courrier-departs', function () {
+    return Inertia::render('ListCourrierDeparts');
+})->name('courrier-departs.index');
+
+// Ajouter
 Route::get('/courrier-departs/create', function () {
-    return inertia('CreateCourrierDepart');
-});
+    return Inertia::render('CreateCourrierDepart');
+})->name('courrier-departs.create');
 /*
 |--------------------------------------------------------------------------
-| Courriers (Pages React via Inertia)
+| Courrier Départ
 |--------------------------------------------------------------------------
 */
 
-// Liste des courriers
-Route::get('/courriers', [CourrierController::class, 'index'])->name('courriers.index');
+Route::get('/courrier-departs/create', function () {
+    return Inertia::render('CreateCourrierDepart');
+});
 
-// Page Ajouter Courrier
+
+/*
+|--------------------------------------------------------------------------
+| Courriers Arrivée
+|--------------------------------------------------------------------------
+*/
+
+// Liste
+Route::get('/courriers', function () {
+    return Inertia::render('ListCourriers');
+})->name('courriers.index');
+
+
+// Ajouter + Modifier (نفس الصفحة)
 Route::get('/courriers/create', function () {
     return Inertia::render('CreateCourrier');
 })->name('courriers.create');
-
-// Enregistrer courrier
-Route::post('/courriers', [CourrierController::class, 'submit'])->name('courriers.store');
 
 
 /*
@@ -62,6 +79,5 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
-
 
 require __DIR__.'/auth.php';

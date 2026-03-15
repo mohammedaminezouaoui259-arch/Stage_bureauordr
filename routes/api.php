@@ -5,39 +5,64 @@ use App\Http\Controllers\Api\CourrierController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\NatureController;
 use App\Http\Controllers\Api\CourrierDepartController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
 
-// 🔹 récupérer le prochain numéro de courrier حسب السنة
-Route::get('/courriers/next-number', [CourrierController::class, 'nextNumber']);
+
+// 🔹 next numero
+Route::get('/courriers/next-number',[CourrierController::class,'nextNumber']);
 
 
-// 🔹 ajouter un courrier
-Route::post('/courriers', [CourrierController::class, 'store']);
+// 🔹 ajouter courrier
+Route::post('/courriers',[CourrierController::class,'store']);
 
 
-// 🔹 liste des courriers
-Route::get('/courriers', [CourrierController::class, 'index']);
+// 🔹 liste courrier arrivée
+Route::get('/courriers',[CourrierController::class,'index']);
 
 
-// 🔹 télécharger PDF courrier
-Route::get('/courriers/{id}/pdf', [CourrierController::class, 'downloadPdf']);
+// 🔹 valider courrier (Voir)
+Route::put('/courriers/{id}/valider',[CourrierController::class,'valider']);
 
 
-// 🔹 récupérer liste des services
-Route::get('/services', [ServiceController::class, 'index']);
+// 🔹 supprimer courrier
+Route::delete('/courriers/{id}',[CourrierController::class,'destroy']);
 
 
-// 🔹 ajouter service depuis select
-Route::post('/services', [ServiceController::class, 'store']);
+// 🔹 télécharger PDF
+Route::get('/courriers/{id}/pdf',[CourrierController::class,'downloadPdf']);
 
-Route::get('/natures', [NatureController::class, 'index']);
 
+// 🔹 services
+Route::get('/services',[ServiceController::class,'index']);
+Route::post('/services',[ServiceController::class,'store']);
+
+
+// 🔹 natures
+Route::get('/natures',[NatureController::class,'index']);
+
+
+// 🔹 courrier départ
 Route::get('/courrier-departs/next-number',[CourrierDepartController::class,'nextNumber']);
-
 Route::post('/courrier-departs',[CourrierDepartController::class,'store']);
-
 Route::get('/courrier-departs',[CourrierDepartController::class,'index']);
+Route::get('/courrier-departs/{id}', [CourrierDepartController::class, 'show']);
+Route::put('/courrier-departs/{id}/valider', [CourrierDepartController::class, 'valider']);
+Route::put('/courrier-departs/{id}', [CourrierDepartController::class, 'update']);
+Route::delete('/courrier-departs/{id}', [CourrierDepartController::class, 'destroy']);
+Route::get('/courrier-departs/download/{id}', [CourrierDepartController::class, 'downloadPdf']);
+Route::get('/courrier-departs/generer-pdf/{annee}', [CourrierDepartController::class, 'genererPdf']);
+//modifier
+Route::get('/courriers/{id}',[CourrierController::class,'show']);
+
+Route::post('/courriers/{id}',[CourrierController::class,'update']);
+
+//liste generer pdf
+Route::get('/courriers/generer-pdf/{annee}', [CourrierController::class,'genererPdf']);
+
+//telecharger pdf
+Route::get('/courriers/download/{id}', [CourrierController::class,'downloadPdf']);

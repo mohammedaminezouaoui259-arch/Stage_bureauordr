@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -47,9 +46,8 @@ line-height:1.2;
 
 .hero{
 text-align:center;
-padding:110px 20px;
+padding:60px 20px;
 background:white;
-border-bottom:4px solid #0b3d91;
 }
 
 .hero h1{
@@ -63,7 +61,7 @@ font-size:18px;
 max-width:700px;
 margin:auto;
 line-height:1.6;
-margin-bottom:35px;
+margin-bottom:20px;
 }
 
 /* BUTTONS */
@@ -109,7 +107,8 @@ display:flex;
 justify-content:center;
 gap:30px;
 flex-wrap:wrap;
-padding:60px 20px;
+padding:20px 20px;
+margin-top:-40px;
 }
 
 .card{
@@ -199,22 +198,6 @@ Se Connecter
 Gérez efficacement les courriers entrants et sortants du Conseil Provincial d'Oujda-Angad.
 Suivi, archivage sécurisé et accès rapide à tous vos documents administratifs.
 </p>
-
-<a href="/courriers/create" class="btn btn-add">
-Courrier Arrivée
-</a>
-
-&nbsp;
-
-<a href="/courrier-departs/create" class="btn btn-add">
-Courrier Départ
-</a>
-
-&nbsp;
-
-<a href="/courriers" class="btn btn-list">
-Voir la Liste des Courriers
-</a>
 
 </div>
 

@@ -5,16 +5,22 @@ export default function ListCourriers() {
 
 const [courriers, setCourriers] = useState([]);
 const [search, setSearch] = useState("");
+const [annee, setAnnee] = useState("");
 
 useEffect(() => {
+loadCourriers();
+}, []);
+
+const loadCourriers = () => {
 
 fetch("/api/courriers")
 .then(res => res.json())
 .then(data => {
-setCourriers(data);
-});
+setCourriers(Array.isArray(data) ? data : []);
+})
+.catch(() => setCourriers([]));
 
-}, []);
+};
 
 const filtered = courriers.filter(c => {
 
@@ -26,19 +32,48 @@ return numero.includes(s) || objet.includes(s);
 
 });
 
-const getStatut = (c) => {
+const deleteCourrier = (id) => {
 
-if(c.courrier_arrive_id){
-return {text:"Réponse envoyée",color:"bg-green-100 text-green-700"};
+if(!confirm("Supprimer ce courrier ?")) return;
+
+fetch(`/api/courriers/${id}`,{
+method:"DELETE"
+})
+.then(()=> loadCourriers());
+
+};
+
+const voirCourrier = (c) => {
+
+if(c.fichier){
+window.open(`/storage/${c.fichier}`,"_blank");
 }
 
-if(c.type === "depart"){
-return {text:"Envoyé",color:"bg-blue-100 text-blue-700"};
+fetch(`/api/courriers/${c.id}/valider`,{
+method:"PUT"
+})
+.then(()=> loadCourriers());
+
+};
+
+const telecharger = (c) => {
+
+window.open(`/api/courriers/download/${c.id}`,"_blank");
+
+};
+
+const genererPdf = () => {
+
+if(!annee){
+alert("Choisir une année");
+return;
 }
 
-return {text:"Reçu",color:"bg-yellow-100 text-yellow-700"};
+window.open(`/api/courriers/generer-pdf/${annee}`,"_blank");
 
-}
+};
+
+const annees = [...new Set(courriers.map(c => c.annee))];
 
 return (
 
@@ -49,7 +84,7 @@ return (
 <div className="flex justify-between items-center mb-6">
 
 <h1 className="text-3xl font-bold text-gray-800">
-Liste des Courriers
+Liste Courrier Arrivée
 </h1>
 
 <button
@@ -61,13 +96,40 @@ Accueil
 
 </div>
 
+{/* zone recherche + année */}
+
+<div className="flex items-center gap-4 mb-6">
+
 <input
 type="text"
-placeholder="Rechercher par numéro ou objet..."
+placeholder="Rechercher..."
 value={search}
 onChange={(e)=>setSearch(e.target.value)}
-className="border border-gray-300 rounded-lg p-3 w-full mb-6 focus:outline-none focus:ring-2 focus:ring-blue-400"
+className="border border-gray-300 rounded-lg p-2 w-64"
 />
+
+<select
+value={annee}
+onChange={(e)=>setAnnee(e.target.value)}
+className="border border-gray-300 rounded-lg p-2"
+>
+
+<option value="">Année</option>
+
+{annees.map(a=>(
+<option key={a} value={a}>{a}</option>
+))}
+
+</select>
+
+<button
+onClick={genererPdf}
+className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+>
+Générer PDF
+</button>
+
+</div>
 
 <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
 
@@ -75,13 +137,15 @@ className="border border-gray-300 rounded-lg p-3 w-full mb-6 focus:outline-none 
 
 <tr>
 <th className="p-3 border">Numero</th>
+<th className="p-3 border">Année</th>
 <th className="p-3 border">Objet</th>
-<th className="p-3 border">Type</th>
-<th className="p-3 border">Date</th>
+<th className="p-3 border">Date arrivée</th>
 <th className="p-3 border">Service</th>
 <th className="p-3 border">Statut</th>
-<th className="p-3 border">PDF</th>
+<th className="p-3 border">Voir</th>
 <th className="p-3 border">Télécharger</th>
+<th className="p-3 border">Modifier</th>
+<th className="p-3 border">Supprimer</th>
 </tr>
 
 </thead>
@@ -91,7 +155,7 @@ className="border border-gray-300 rounded-lg p-3 w-full mb-6 focus:outline-none 
 {filtered.length === 0 ? (
 
 <tr>
-<td colSpan="8" className="text-center p-6 text-gray-500">
+<td colSpan="10" className="text-center p-6 text-gray-500">
 Aucun courrier trouvé
 </td>
 </tr>
@@ -102,10 +166,6 @@ filtered.map(c => {
 
 const service = c.affectations?.[0]?.service?.nom_service || "-";
 
-const statut = getStatut(c);
-
-const date = c.date_arrivee || c.date_depart || "-";
-
 return (
 
 <tr key={c.id} className="hover:bg-gray-100">
@@ -114,24 +174,16 @@ return (
 {c.numero}
 </td>
 
+<td className="border p-3 text-center">
+{c.annee}
+</td>
+
 <td className="border p-3">
 {c.objet}
 </td>
 
 <td className="border p-3 text-center">
-
-<span className={`px-3 py-1 rounded-full text-sm ${
-c.type === "depart"
-? "bg-purple-100 text-purple-700"
-: "bg-blue-100 text-blue-700"
-}`}>
-{c.type === "depart" ? "Départ" : "Arrivée"}
-</span>
-
-</td>
-
-<td className="border p-3 text-center">
-{date}
+{c.date_arrivee}
 </td>
 
 <td className="border p-3">
@@ -140,36 +192,59 @@ c.type === "depart"
 
 <td className="border p-3 text-center">
 
-<span className={`px-3 py-1 rounded-full text-sm ${statut.color}`}>
-{statut.text}
+<span className={`px-3 py-1 rounded-full text-sm ${
+c.status_id == 1
+? "bg-yellow-100 text-yellow-700"
+: "bg-green-100 text-green-700"
+}`}>
+
+{c.status_id == 1 ? "Draft" : "Validé"}
+
 </span>
 
 </td>
 
 <td className="border p-3 text-center">
 
-{c.fichier ? (
-
-<a
-href={`/storage/${c.fichier}`}
-target="_blank"
-className="text-blue-600 font-semibold hover:underline"
+<button
+onClick={()=>voirCourrier(c)}
+className="text-blue-600 hover:underline"
 >
 Voir
-</a>
-
-) : "-"}
+</button>
 
 </td>
 
 <td className="border p-3 text-center">
 
-<a
-href={`/api/courriers/${c.id}/pdf`}
-className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+<button
+onClick={()=>telecharger(c)}
+className="text-green-600 hover:underline"
 >
 Télécharger
-</a>
+</button>
+
+</td>
+
+<td className="border p-3 text-center">
+
+<button
+onClick={()=>router.visit(`/courriers/create?id=${c.id}`)}
+className="text-orange-600 hover:underline"
+>
+Modifier
+</button>
+
+</td>
+
+<td className="border p-3 text-center">
+
+<button
+onClick={()=>deleteCourrier(c.id)}
+className="text-red-600 hover:underline"
+>
+Supprimer
+</button>
 
 </td>
 

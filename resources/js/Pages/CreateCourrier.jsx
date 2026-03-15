@@ -4,6 +4,9 @@ import { router } from "@inertiajs/react"
 
 export default function CreateCourrier(){
 
+const params = new URLSearchParams(window.location.search)
+const editId = params.get("id")
+
 const [numero,setNumero] = useState("")
 const [annee,setAnnee] = useState(new Date().getFullYear())
 const [objet,setObjet] = useState("")
@@ -26,7 +29,9 @@ useEffect(()=>{
 fetch("/api/courriers/next-number?annee="+annee)
 .then(res=>res.json())
 .then(data=>{
+if(!editId){
 setNumero(data.numero)
+}
 })
 
 fetch("/api/services")
@@ -40,6 +45,29 @@ fetch("/api/natures")
 .then(data=>{
 setNatures(data)
 })
+
+if(editId){
+
+fetch("/api/courriers/"+editId)
+.then(res=>res.json())
+.then(data=>{
+
+setNumero(data.numero)
+setAnnee(data.annee)
+setObjet(data.objet)
+setType(data.type)
+setDate(data.date_courrier)
+setDescription(data.description || "")
+setExpediteur(data.expediteur || "")
+setDestinataire(data.destinataire || "")
+setNombrePieces(data.nombre_pieces || "")
+setObservations(data.observations || "")
+setNatureId(data.nature_id)
+setServiceId(data.service_id)
+
+})
+
+}
 
 },[annee])
 
@@ -110,20 +138,22 @@ if(fichier){
 formData.append("fichier",fichier)
 }
 
-fetch("/api/courriers",{
+const url = editId ? "/api/courriers/"+editId : "/api/courriers"
+
+fetch(url,{
 method:"POST",
 body:formData
 })
 .then(res=>res.json())
 .then(()=>{
 
-alert("Courrier ajouté avec succès")
+alert(editId ? "Courrier modifié avec succès" : "Courrier ajouté avec succès")
 
 router.visit("/courriers")
 
 })
 .catch(()=>{
-alert("Erreur lors de l'ajout")
+alert("Erreur lors de l'opération")
 setLoading(false)
 })
 
@@ -131,35 +161,62 @@ setLoading(false)
 
 return(
 
-<div className="min-h-screen bg-gray-100 p-8">
+<div className="min-h-screen bg-dark-50">
+
+<div className="bg-blue-900 text-white flex items-center justify-between px-6 py-3">
+
+<div className="flex items-center gap-4">
+
+<img
+src="/images/wilaya.png"
+className="h-12"
+/>
+
+<div>
+
+<h1 className="font-bold text-lg">
+Bureau d'Ordre
+</h1>
+
+<p className="text-sm">
+Conseil Provincial Oujda-Angad
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div className="flex">
+
+<div className="w-60 bg-white shadow-md min-h-screen p-4">
+
+<button
+onClick={()=>router.visit("/")}
+className="block w-full text-left p-3 rounded hover:bg-gray-200"
+>
+Accueil
+</button>
+
+<button
+onClick={()=>router.visit("/courriers")}
+className="block w-full text-left p-3 rounded hover:bg-gray-200"
+>
+Liste Courriers
+</button>
+
+</div>
+
+<div className="flex-1 p-8">
 
 <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-8">
 
 <div className="flex justify-between items-center mb-6 border-b pb-4">
 
 <h1 className="text-2xl font-bold text-gray-700">
-Nouveau Courrier Arrivée
+{editId ? "Modifier Courrier Arrivée" : "Nouveau Courrier Arrivée"}
 </h1>
-
-<div className="flex gap-3">
-
-<button
-type="button"
-onClick={()=>router.visit("/")}
-className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
->
-Accueil
-</button>
-
-<button
-type="button"
-onClick={()=>router.visit("/courriers")}
-className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
->
-Liste Courriers
-</button>
-
-</div>
 
 </div>
 
@@ -190,7 +247,9 @@ className="w-full border rounded-lg p-2 bg-gray-100"
 </div>
 
 <div>
-<label className="text-sm font-medium">Date d'arrivée *</label>
+<label className="text-sm font-medium">
+Date d'arrivée *
+</label>
 <input
 type="date"
 value={date}
@@ -201,7 +260,9 @@ className="w-full border rounded-lg p-2"
 </div>
 
 <div>
-<label className="text-sm font-medium">Objet *</label>
+<label className="text-sm font-medium">
+Objet *
+</label>
 <input
 type="text"
 value={objet}
@@ -211,7 +272,10 @@ className="w-full border rounded-lg p-2"
 </div>
 
 <div>
-<label className="text-sm font-medium">Type de courrier *</label>
+<label className="text-sm font-medium">
+Type de courrier *
+</label>
+
 <select
 value={type}
 onChange={(e)=>setType(e.target.value)}
@@ -228,7 +292,9 @@ className="w-full border rounded-lg p-2"
 </div>
 
 <div>
-<label className="text-sm font-medium">Nature *</label>
+<label className="text-sm font-medium">
+Nature *
+</label>
 
 <select
 value={natureId}
@@ -320,12 +386,14 @@ isSearchable
 <label className="text-sm font-medium">
 Scan courrier (PDF)
 </label>
+
 <input
 type="file"
 accept="application/pdf"
 onChange={(e)=>setFichier(e.target.files[0])}
 className="w-full border rounded-lg p-2"
 />
+
 </div>
 
 <button
@@ -334,11 +402,15 @@ disabled={loading}
 className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg w-full text-lg"
 >
 
-{loading ? "Enregistrement..." : "Enregistrer le courrier"}
+{loading ? "Enregistrement..." : editId ? "Modifier le courrier" : "Enregistrer le courrier"}
 
 </button>
 
 </form>
+
+</div>
+
+</div>
 
 </div>
 

@@ -25,7 +25,8 @@ class CourrierDepart extends Model
         'fichier',
         'nature_id',
         'courrier_arrive_id',
-        'user_id'
+        'user_id',
+        'status_id'
     ];
 
     /*
