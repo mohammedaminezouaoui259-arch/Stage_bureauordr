@@ -8,8 +8,9 @@ class Affectation extends Model
 {
     protected $fillable = [
         'date_affectation',
+        'message',
         'courrier_id',
-        'service_id',
+        'service_id'
     ];
 
     public function courrier()

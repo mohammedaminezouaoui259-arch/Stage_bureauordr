@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,10 +11,14 @@ use Inertia\Inertia;
 | Page d'accueil
 |--------------------------------------------------------------------------
 */
-Route::get('/courrier-departs', function () {
-    return Inertia::render('CourrierDeparts/ListCourrierDeparts');
-});
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Courrier Départ
+|--------------------------------------------------------------------------
+*/
 
 // Liste
 Route::get('/courrier-departs', function () {
@@ -24,16 +29,12 @@ Route::get('/courrier-departs', function () {
 Route::get('/courrier-departs/create', function () {
     return Inertia::render('CreateCourrierDepart');
 })->name('courrier-departs.create');
-/*
-|--------------------------------------------------------------------------
-| Courrier Départ
-|--------------------------------------------------------------------------
-*/
 
-Route::get('/courrier-departs/create', function () {
-    return Inertia::render('CreateCourrierDepart');
-});
+// Export Excel
+Route::get('/courrier-departs/export-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'exportExcel']);
 
+// Template Excel
+Route::get('/courrier-departs/template-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'downloadTemplate']);
 
 /*
 |--------------------------------------------------------------------------
@@ -46,12 +47,10 @@ Route::get('/courriers', function () {
     return Inertia::render('ListCourriers');
 })->name('courriers.index');
 
-
 // Ajouter + Modifier (نفس الصفحة)
 Route::get('/courriers/create', function () {
     return Inertia::render('CreateCourrier');
 })->name('courriers.create');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -60,9 +59,8 @@ Route::get('/courriers/create', function () {
 */
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+    return redirect('/');
+})->middleware(['auth'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
@@ -79,5 +77,24 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
+
+// user :page gestion utilisateur
+Route::get('/users', function () {
+    return Inertia::render('Users');
+})->middleware(['auth']);
+// user
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+});
+
+Route::get('/users', function () {
+    return Inertia::render('Users');
+})->middleware('auth');
 
 require __DIR__.'/auth.php';

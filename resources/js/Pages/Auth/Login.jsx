@@ -25,9 +25,17 @@ export default function Login({ status, canResetPassword }) {
         <GuestLayout>
             <Head title="Log in" />
 
+            {/* 🔥 SUCCESS MESSAGE */}
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
                     {status}
+                </div>
+            )}
+
+            {/* 🔥 ERROR MESSAGE (désactivé ou login error) */}
+            {errors.email && (
+                <div className="mb-4 p-3 rounded bg-red-100 text-red-700 border border-red-300">
+                    {errors.email}
                 </div>
             )}
 
@@ -45,8 +53,6 @@ export default function Login({ status, canResetPassword }) {
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
@@ -61,8 +67,6 @@ export default function Login({ status, canResetPassword }) {
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
                 </div>
 
                 <div className="mt-4 block">
@@ -80,19 +84,32 @@ export default function Login({ status, canResetPassword }) {
                     </label>
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+                <div className="mt-4 flex items-center justify-between">
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    {/* 🔥 REGISTER BUTTON */}
+                    <Link
+                        href={route('register')}
+                        className="text-sm text-blue-600 hover:underline"
+                    >
+                        Create account
+                    </Link>
+
+                    <div className="flex items-center">
+
+                        {canResetPassword && (
+                            <Link
+                                href={route('password.request')}
+                                className="me-4 text-sm text-gray-600 underline hover:text-gray-900"
+                            >
+                                Forgot password?
+                            </Link>
+                        )}
+
+                        <PrimaryButton disabled={processing}>
+                            Log in
+                        </PrimaryButton>
+
+                    </div>
                 </div>
             </form>
         </GuestLayout>

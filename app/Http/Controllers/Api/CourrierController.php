@@ -8,6 +8,7 @@ use App\Models\Affectation;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Str;
 class CourrierController extends Controller
 {
 
@@ -78,9 +79,9 @@ if($request->hasFile('fichier')){
 
 $file = $request->file('fichier');
 
-$folder = 'courriers/'.$courrier->annee;
+$folder = 'courriers/arrivés';
 
-$filename = 'courrier_'.$courrier->numero.'.'.$file->getClientOriginalExtension();
+$filename = 'courrier_arrivé_'.$courrier->annee.'_'.$courrier->numero.'_'.Str::uuid().'.'.$file->getClientOriginalExtension();
 
 $path = $file->storeAs($folder,$filename,'public');
 

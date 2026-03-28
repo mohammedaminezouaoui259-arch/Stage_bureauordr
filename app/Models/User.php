@@ -18,9 +18,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+    'name',
+    'email',
+    'password',
+    'role',
+    'service',
+    'is_active',
+    'nature_id'
     ];
 
     /**
@@ -59,6 +63,24 @@ class User extends Authenticatable
     public function traitements()
     {
         return $this->hasMany(Traitement::class);
+    }
+    public function nature()
+    {
+    return $this->belongsTo(\App\Models\Nature::class);
+    }
+    public function isAdmin()
+    {
+    return $this->role === 'admin';
+    }
+
+    public function isManager()
+    {
+    return $this->role === 'manager';
+    }
+
+    public function isUser()
+    {
+    return $this->role === 'user';
     }
 }
 

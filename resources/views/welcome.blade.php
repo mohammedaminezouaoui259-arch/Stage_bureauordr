@@ -12,6 +12,54 @@ margin:0;
 font-family:'Poppins',sans-serif;
 background:#f4f6f9;
 color:#333;
+display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:250px;
+background:#0f172a;
+color:white;
+min-height:100vh;
+padding:20px;
+}
+
+.sidebar h2{
+text-align:center;
+font-size:18px;
+margin-bottom:20px;
+}
+
+.sidebar button{
+width:100%;
+margin-bottom:10px;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#1e293b;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.sidebar button:hover{
+background:#334155;
+}
+
+/* 🔥 ADMIN BUTTON */
+.admin-btn{
+background:#b91c1c !important;
+}
+
+.admin-btn:hover{
+background:#991b1b !important;
+}
+
+/* CONTENT */
+
+.main{
+flex:1;
 }
 
 /* HEADER */
@@ -42,6 +90,27 @@ font-size:22px;
 line-height:1.2;
 }
 
+/* BUTTONS */
+
+.btn{
+padding:12px 28px;
+border-radius:8px;
+font-weight:600;
+color:white;
+border:none;
+cursor:pointer;
+text-decoration:none; /* 🔥 حذف underline */
+display:inline-block;
+}
+
+.btn-login{
+background:#1abc9c;
+}
+
+.btn-login:hover{
+background:#16a085;
+}
+
 /* HERO */
 
 .hero{
@@ -62,42 +131,6 @@ max-width:700px;
 margin:auto;
 line-height:1.6;
 margin-bottom:20px;
-}
-
-/* BUTTONS */
-
-.btn{
-display:inline-block;
-padding:12px 28px;
-border-radius:8px;
-font-weight:600;
-text-decoration:none;
-color:white;
-transition:0.3s;
-}
-
-.btn-login{
-background:#1abc9c;
-}
-
-.btn-login:hover{
-background:#16a085;
-}
-
-.btn-add{
-background:#e67e22;
-}
-
-.btn-add:hover{
-background:#d35400;
-}
-
-.btn-list{
-background:#3498db;
-}
-
-.btn-list:hover{
-background:#2980b9;
 }
 
 /* CARDS */
@@ -137,6 +170,23 @@ color:#555;
 margin-bottom:20px;
 }
 
+.btn-add{
+background:#e67e22;
+}
+
+.btn-add:hover{
+background:#d35400;
+}
+
+.btn-list{
+background:#3498db;
+margin-bottom:10px; /* 🔥 باش يبعدو */
+}
+
+.btn-list:hover{
+background:#2980b9;
+}
+
 /* FOOTER */
 
 .footer{
@@ -147,25 +197,43 @@ color:white;
 margin-top:40px;
 }
 
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-.definition{
-flex-direction:column;
-align-items:center;
-}
-
-.hero h1{
-font-size:32px;
-}
-
-}
-
 </style>
 </head>
 
 <body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>Gestion Courrier</h2>
+
+<button onclick="window.location.href='/'">
+Accueil
+</button>
+
+<button onclick="window.location.href='/courriers/create'">
+Ajouter Courrier Arrivée
+</button>
+
+<button onclick="window.location.href='/courrier-departs/create'">
+Ajouter Courrier Départ
+</button>
+
+<!-- 🔥 ADMIN (manager + admin) -->
+@auth
+@if(in_array(auth()->user()->role, ['manager','admin']))
+<button onclick="window.location.href='/users'" class="admin-btn">
+Administration
+</button>
+@endif
+@endauth
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
 
 <!-- HEADER -->
 
@@ -173,7 +241,7 @@ font-size:32px;
 
 <div class="header-left">
 
-<img src="{{ asset('images/wilaya.png') }}" class="logo">
+<img src="{{ asset('images/wilaya (1).png') }}" class="logo">
 
 <div class="title">
 Bureau d'Ordre<br>
@@ -182,9 +250,22 @@ Bureau d'Ordre<br>
 
 </div>
 
+<!-- LOGIN / LOGOUT -->
+
+@auth
+<form method="POST" action="{{ route('logout') }}">
+@csrf
+<button type="submit" class="btn btn-login">
+Logout
+</button>
+</form>
+@endauth
+
+@guest
 <a href="{{ route('login') }}" class="btn btn-login">
 Se Connecter
 </a>
+@endguest
 
 </div>
 
@@ -242,7 +323,11 @@ Consulter tous les courriers entrants et sortants avec leurs détails.
 </p>
 
 <a href="/courriers" class="btn btn-list">
-Voir la Liste
+Voir Arrivée
+</a>
+
+<a href="/courrier-departs" class="btn btn-list">
+Voir Départ
 </a>
 
 </div>
@@ -253,6 +338,8 @@ Voir la Liste
 
 <div class="footer">
 © 2026 Conseil de la Province d'Oujda-Angad
+</div>
+
 </div>
 
 </body>
