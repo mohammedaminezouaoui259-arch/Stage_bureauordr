@@ -13,7 +13,7 @@ return new class extends Migration
 
         $table->string('numero')->unique();
         $table->string('type');
-        $table->string('objet');
+        $table->longText('objet');
         $table->text('description')->nullable();
         $table->date('date_courrier');
         $table->string('expediteur')->nullable();

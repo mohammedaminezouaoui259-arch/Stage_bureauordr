@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../Components/Sidebar";
+import Sidebar from "../../Components/Sidebar";
 
 export default function Index() {
     const [affectations, setAffectations] = useState([]);

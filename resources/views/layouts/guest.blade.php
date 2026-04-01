@@ -23,6 +23,11 @@
             </div>
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+                @if(session('message'))
+                    <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 {{ $slot }}
             </div>
         </div>

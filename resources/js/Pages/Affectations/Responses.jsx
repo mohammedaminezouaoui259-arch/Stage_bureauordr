@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../Components/Sidebar";
+import Sidebar from "../../Components/Sidebar";
 
 export default function Responses() {
     const [reponses, setReponses] = useState([]);

@@ -11,11 +11,7 @@ use Inertia\Inertia;
 | Page d'accueil
 |--------------------------------------------------------------------------
 */
-//affictation
-Route::get('/affectations', function () {
-    return Inertia::render('Affectations');
-})->middleware('auth');
-
+// affictation
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 /*
@@ -27,18 +23,18 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Liste
 Route::get('/courrier-departs', function () {
     return Inertia::render('ListCourrierDeparts');
-})->name('courrier-departs.index');
+})->middleware('auth')->name('courrier-departs.index');
 
 // Ajouter
 Route::get('/courrier-departs/create', function () {
     return Inertia::render('CreateCourrierDepart');
-})->name('courrier-departs.create');
+})->middleware('auth')->name('courrier-departs.create');
 
 // Export Excel
-Route::get('/courrier-departs/export-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'exportExcel']);
+Route::get('/courrier-departs/export-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'exportExcel'])->middleware('auth');
 
 // Template Excel
-Route::get('/courrier-departs/template-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'downloadTemplate']);
+Route::get('/courrier-departs/template-excel', [\App\Http\Controllers\Api\CourrierDepartController::class, 'downloadTemplate'])->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,12 +45,12 @@ Route::get('/courrier-departs/template-excel', [\App\Http\Controllers\Api\Courri
 // Liste
 Route::get('/courriers', function () {
     return Inertia::render('ListCourriers');
-})->name('courriers.index');
+})->middleware('auth')->name('courriers.index');
 
 // Ajouter + Modifier (نفس الصفحة)
 Route::get('/courriers/create', function () {
     return Inertia::render('CreateCourrier');
-})->name('courriers.create');
+})->middleware('auth')->name('courriers.create');
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
 // user :page gestion utilisateur
 Route::get('/users', function () {
     return Inertia::render('Users');
-});
+})->middleware('auth');
 
 // user API
 Route::middleware(['auth'])->group(function () {
@@ -108,8 +104,8 @@ require __DIR__.'/auth.php';
 
 Route::get('/affectations', function () {
     return Inertia::render('Affectations/Index');
-})->name('affectations.index');
+})->middleware('auth')->name('affectations.index');
 
 Route::get('/reponses', function () {
     return Inertia::render('Affectations/Responses');
-})->name('reponses.index');
+})->middleware('auth')->name('reponses.index');

@@ -68,10 +68,10 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 
 // affectations
 Route::middleware('auth')->group(function () {
-    Route::get('/affectations/list', [\App\Http\Controllers\AffectationController::class, 'index']);
-    Route::post('/affectations', [\App\Http\Controllers\AffectationController::class, 'store']);
-    Route::post('/affectations/{id}/respond', [\App\Http\Controllers\AffectationController::class, 'respond']);
-    Route::get('/reponses/list', [\App\Http\Controllers\AffectationController::class, 'responses']);
+    Route::get('/affectations/list', [\App\Http\Controllers\Api\AffectationController::class, 'index']);
+    Route::post('/affectations', [\App\Http\Controllers\Api\AffectationController::class, 'store']);
+    Route::post('/affectations/{id}/respond', [\App\Http\Controllers\Api\AffectationController::class, 'respond']);
+    Route::get('/reponses/list', [\App\Http\Controllers\Api\AffectationController::class, 'responses']);
 });
 
 // current user info
