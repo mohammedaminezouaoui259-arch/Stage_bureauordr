@@ -67,8 +67,8 @@ Route::middleware('auth:web')->group(function () {
     Route::put('/users/{id}', [UserController::class, 'update']);
 });
 
-// affectations (protégé par authentification Sanctum)
-Route::middleware('auth:sanctum')->group(function () {
+// affectations (protégé par authentification session)
+Route::middleware('auth:web')->group(function () {
     Route::get('/affectations/list', [\App\Http\Controllers\Api\AffectationController::class, 'index']);
     Route::post('/affectations', [\App\Http\Controllers\Api\AffectationController::class, 'store']);
     Route::post('/affectations/{id}/respond', [\App\Http\Controllers\Api\AffectationController::class, 'respond']);

@@ -38,6 +38,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('service123'),
                 'role' => 'user',
                 'service' => $service->nom_service,
+                'service_id' => $service->id,
                 'is_active' => true,
             ]);
         }
