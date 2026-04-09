@@ -19,47 +19,66 @@ const [nombrePieces,setNombrePieces] = useState("")
 const [observations,setObservations] = useState("")
 const [natureId,setNatureId] = useState("1")
 const [natures,setNatures] = useState([])
+const [authError,setAuthError] = useState(false)
 const [fichier,setFichier] = useState(null)
 const [loading,setLoading] = useState(false)
 
 useEffect(()=>{
 
 fetch("/api/courriers/next-number?annee="+annee, { credentials: "include" })
-.then(res=>res.json())
+.then(res=>{
+    if(!res.ok){ setAuthError(true); return {}; }
+    return res.json()
+})
 .then(data=>{
-if(!editId){
+if(!editId && data.numero){
 setNumero(data.numero)
 }
 })
 
 fetch("/api/natures", { credentials: "include" })
-.then(res=>res.json())
+.then(res=>{
+    if(!res.ok){ setAuthError(true); return []; }
+    return res.json()
+})
 .then(data=>{
-setNatures(data)
+setNatures(Array.isArray(data) ? data : [])
 })
 
 if(editId){
 
 fetch("/api/courriers/"+editId, { credentials: "include" })
-.then(res=>res.json())
+.then(res=>{
+    if(!res.ok){ setAuthError(true); return {}; }
+    return res.json()
+})
 .then(data=>{
 
-setNumero(data.numero)
-setAnnee(data.annee)
-setObjet(data.objet)
-setType(data.type)
-setDate(data.date_courrier)
+setNumero(data.numero || "")
+setAnnee(data.annee || new Date().getFullYear())
+setObjet(data.objet || "")
+setType(data.type || "Officiel")
+setDate(data.date_courrier || "")
 setDescription(data.description || "")
 setExpediteur(data.expediteur || "")
 setNombrePieces(data.nombre_pieces || "")
 setObservations(data.observations || "")
-setNatureId(data.nature_id)
+setNatureId(data.nature_id ? String(data.nature_id) : "1")
 
 })
 
 }
 
 },[annee])
+
+if(authError){
+    return (
+        <div style={{padding:"40px", textAlign:"center"}}>
+            <p>Veuillez vous reconnecter.</p>
+            <button onClick={()=>window.location.href="/login"}>Aller à la connexion</button>
+        </div>
+    )
+}
 
 const submitForm = (e)=>{
 

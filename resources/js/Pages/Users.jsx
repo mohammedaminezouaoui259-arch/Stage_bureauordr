@@ -10,14 +10,14 @@ export default function Users() {
   useEffect(() => {
 
     Promise.all([
-      fetch("/api/users-api").then(res => res.json()),
-      fetch("/api/natures").then(res => res.json()),
-      fetch("/api/services").then(res => res.json())
+      fetch("/api/users-api", { credentials: "include" }).then(res => res.json()),
+      fetch("/api/natures", { credentials: "include" }).then(res => res.json()),
+      fetch("/api/services", { credentials: "include" }).then(res => res.json())
     ])
     .then(([usersData, naturesData, servicesData]) => {
-      setUsers(usersData);
-      setNatures(naturesData);
-      setServices(servicesData);
+      setUsers(Array.isArray(usersData) ? usersData : []);
+      setNatures(Array.isArray(naturesData) ? naturesData : []);
+      setServices(Array.isArray(servicesData) ? servicesData : []);
       setLoading(false);
     })
     .catch(err => {
@@ -28,12 +28,14 @@ export default function Users() {
   }, []);
 
   const updateUser = (u) => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
 
     fetch(`/api/users/${u.id}`, {
       method: "PUT",
       credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": csrfToken
       },
       body: JSON.stringify({
         name: u.name,
